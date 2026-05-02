@@ -32,10 +32,22 @@
             window._firebaseDoc = doc;
             window._firebaseGetDoc = getDoc;
         } catch(e) { console.log('Firebase optional - running offline'); }
+        let mouseX = 0, mouseY = 0;
+        let moving = false;
         document.addEventListener('mousemove', e => {
-            const glow = document.getElementById('cursorGlow');
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if (!moving) {
+                moving = true;
+                requestAnimationFrame(() => {
+                    const glow = document.getElementById('cursorGlow');
+                    if (glow) {
+                        glow.style.left = mouseX + 'px';
+                        glow.style.top = mouseY + 'px';
+                    }
+                    moving = false;
+                });
+            }
         });
     </script>
 </head>
