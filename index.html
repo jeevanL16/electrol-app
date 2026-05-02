@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectraBot — Premium Election Education Assistant | India</title>
+    <meta name="description" content="ElectraBot: AI-powered, non-partisan election education assistant for Indian voters. Learn about voting, registration, ECI, and civic participation.">
+    
+    <!-- Google Fonts: Outfit & Inter for premium UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cursor-glow { position: fixed; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(66,133,244,0.15) 0%, rgba(66,133,244,0) 70%); pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; mix-blend-mode: screen; }
+    </style>
+    
+    <!-- SECURITY: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com https://translate.google.com https://translate.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://generativelanguage.googleapis.com https://firestore.googleapis.com https://translate.googleapis.com; frame-src 'self' https://www.google.com https://maps.google.com; img-src 'self' data: https: translate.google.com translate.googleapis.com;">
+    
+    <!-- Firebase SDK for session data storage -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js';
+        import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js';
+        const firebaseConfig = { projectId: 'electrabot-edu', apiKey: 'demo-key' };
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            window._firebaseDB = db;
+            window._firebaseSetDoc = setDoc;
+            window._firebaseDoc = doc;
+            window._firebaseGetDoc = getDoc;
+        } catch(e) { console.log('Firebase optional - running offline'); }
+        document.addEventListener('mousemove', e => {
+            const glow = document.getElementById('cursorGlow');
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
+</head>
+<body>
+    <!-- Custom Cursor Glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Background Effects -->
+    <div class="bg-glow"></div>
+
+    <!-- ===== Top Navigation Bar ===== -->
+    <nav class="topnav" id="topnav">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">ElectraBot</span>
+                    <span class="brand-sub">Election Intelligence</span>
+                </div>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#home" class="nav-link active" data-section="home" data-i18n="Platform">Platform</a>
+                <a href="#services" class="nav-link" data-section="services" data-i18n="Intelligence">Intelligence</a>
+                <a href="#chat" class="nav-link" data-section="chat" data-i18n="Electra AI">Electra AI</a>
+                <a href="#google-tools" class="nav-link" data-section="google-tools" data-i18n="Integrations">Integrations</a>
+                <a href="#about" class="nav-link" data-section="about" data-i18n="Mission">Mission</a>
+            </div>
+            <div class="nav-actions">
+                <select id="langSelect" class="lang-select">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                </select>
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== Hero Banner ===== -->
+    <section class="hero" id="home">
+        <div class="hero-orb orb-1"></div>
+        <div class="hero-orb orb-2"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span data-i18n="Empowering the Indian Electorate">Empowering the Indian Electorate</span>
+            </div>
+            <h1>The Next Generation of <br><span class="text-gradient">Election Intelligence</span></h1>
+            <p class="hero-desc">Navigate Indian democracy with confidence. ElectraBot combines verified ECI data with Google Gemini AI to provide real-time, non-partisan civic education.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="document.getElementById('levelModal').classList.remove('hidden');">
+                    Initialize Electra AI
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('services').scrollIntoView();">Explore Capabilities</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Scrolling Ticker ===== -->
+    <div class="ticker">
+        <div class="ticker-inner">
+            <span><i>⚡</i> Live: Verify EVM processes & VVPAT tracking</span>
+            <span><i>⚡</i> New Feature: Speech-to-Text multilingual support activated</span>
+            <span><i>⚡</i> Notice: Always carry your EPIC (Voter ID) to the polling booth</span>
+            <span><i>⚡</i> Learn: How to register online via voters.eci.gov.in</span>
+            <span><i>⚡</i> Live: Verify EVM processes & VVPAT tracking</span>
+            <span><i>⚡</i> New Feature: Speech-to-Text multilingual support activated</span>
+        </div>
+    </div>
+
+    <!-- ===== Intelligence Base Grid ===== -->
+    <section class="services-section" id="services">
+        <div class="section-container fade-up">
+            <div class="section-header">
+                <h2 data-i18n="Civic Intelligence Core">Civic Intelligence Core</h2>
+                <p>Master the election process through our structured knowledge base.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card stagger-1" data-topic="register" id="svcRegister">
+                    <div class="svc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></div>
+                    <h3>Voter Registration</h3>
+                    <p>Navigate Form 6 and the online NVSP portal to secure your EPIC card efficiently.</p>
+                </div>
+                <div class="service-card" data-topic="voting" id="svcVoting">
+                    <div class="svc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                    <h3>EVM Architecture</h3>
+                    <p>Understand the tamper-proof standalone design of Indian Electronic Voting Machines.</p>
+                </div>
+                <div class="service-card" data-topic="security" id="svcSecurity">
+                    <div class="svc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                    <h3>Election Security</h3>
+                    <p>Explore the multi-layered security protocols, CRPF deployment, and VVPAT verification.</p>
+                </div>
+                <div class="service-card" data-topic="rights" id="svcRights">
+                    <div class="svc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></div>
+                    <h3>Voter Rights</h3>
+                    <p>Learn your constitutional rights, including NOTA and secret ballot provisions.</p>
+                </div>
+                <div class="service-card" data-topic="myths" id="svcMyths">
+                    <div class="svc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></div>
+                    <h3>Fact Checker</h3>
+                    <p>Access our database of debunked election myths and disinformation.</p>
+                </div>
+                <div class="service-card" data-topic="electoral-roll" id="svcElectoralRoll">
+                    <div class="svc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></div>
+                    <h3>Electoral Roll</h3>
+                    <p>Step-by-step guidance on verifying your name in the official ECI voter list.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Google Tools Section ===== -->
+    <section class="google-section" id="google-tools">
+        <div class="section-container fade-up">
+            <div class="section-header">
+                <h2 data-i18n="Seamless Integrations">Seamless Integrations</h2>
+                <p>Powered by Google infrastructure for a frictionless voting experience.</p>
+            </div>
+            <div class="feature-grid">
+                <!-- Google Maps Embed Card -->
+                <div class="feature-card glass-panel stagger-1" id="googleMapsCard">
+                    <div class="fcard-header">
+                        <div class="fcard-icon maps">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <h3>Smart Routing</h3>
+                    </div>
+                    <p>Locate your assigned polling booth instantly. Our Google Maps integration provides real-time directions and estimated travel times on Election Day.</p>
+                    <div class="maps-embed-wrap">
+                        <iframe
+                            id="mapsEmbed"
+                            src="https://www.google.com/maps/embed/v1/search?q=polling+booth+near+me&key=AIzaSyAD0_9N5Sy0frXLnt7X2dtZPiES7JZFlmU"
+                            width="100%" height="180" style="border:0;"
+                            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                            title="Google Maps - Find Polling Booth">
+                        </iframe>
+                    </div>
+                    <a href="https://www.google.com/maps/search/polling+booth+near+me" target="_blank" rel="noopener" class="fcard-btn">
+                        Launch Maps <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                </div>
+                
+                <!-- Google Calendar Card -->
+                <div class="feature-card glass-panel" id="googleCalendarCard">
+                    <div class="fcard-header">
+                        <div class="fcard-icon calendar">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <h3>Civic Reminders</h3>
+                    </div>
+                    <p>Never miss a registration deadline or polling day. Sync crucial election dates directly to your Google Calendar with intelligent pre-alerts.</p>
+                    <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Election+Day+Reminder+-+Vote!&details=Remember+to+carry+your+Voter+ID+(EPIC)+and+visit+your+assigned+polling+booth.+Check+voters.eci.gov.in+for+details.&dates=20260101T040000Z/20260101T060000Z" target="_blank" rel="noopener" class="fcard-btn">
+                        Sync to Calendar <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Chat Section (Electra AI) ===== -->
+    <section class="chat-section" id="chat">
+        <div class="section-container fade-up">
+            <div class="section-header">
+                <h2 data-i18n="Electra AI Terminal">Electra AI Terminal</h2>
+                <p>Interact with our fine-tuned Gemini model for real-time civic assistance.</p>
+            </div>
+            
+            <!-- API Key Connection -->
+            <div class="api-key-bar glass-panel" id="apiKeyBar">
+                <div class="api-key-inner">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                    <input type="password" id="apiKeyInput" placeholder="Enter Gemini AI Studio API Key..." />
+                </div>
+                <div class="api-actions">
+                    <button class="api-key-save" id="apiKeySave">Authenticate</button>
+                    <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="btn-secondary" style="padding:0.6rem 1rem;border-radius:99px;text-decoration:none;font-size:0.8rem">Get Key</a>
+                </div>
+            </div>
+            <div class="api-key-status" id="apiKeyStatus"></div>
+
+            <!-- Terminal UI -->
+            <div class="chat-terminal">
+                <div class="chat-header">
+                    <div class="ch-left">
+                        <div class="ch-dot"></div>
+                        <div class="ch-title">Electra_AI <span id="aiModelBadge" class="ai-badge">Offline</span></div>
+                    </div>
+                    <div class="ch-tools">
+                        <!-- Fact check toggle mockup -->
+                        <button class="ch-tool-btn" title="Fact Check Mode" id="factCheckBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        </button>
+                        <div class="ch-title" style="font-size:0.8rem; color:var(--text-muted); font-weight:400;" id="cpLevel">Awaiting Level...</div>
+                    </div>
+                </div>
+                
+                <div class="chat-body" id="chatMessages">
+                    <!-- Messages render here -->
+                </div>
+                
+                <div class="chat-footer">
+                    <div class="chat-suggestions" id="chatSuggestions">
+                        <button class="sugg-chip" data-q="How do I register to vote online?">📝 How to register?</button>
+                        <button class="sugg-chip" data-q="Explain how EVMs and VVPATs work.">🗳️ EVM & VVPAT</button>
+                        <button class="sugg-chip" data-q="How do I find my exact polling booth?">📍 Locate Booth</button>
+                        <button class="sugg-chip" data-q="What are my rights as a voter?">⚖️ Voter Rights</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <textarea id="userInput" placeholder="Ask ElectraBot anything..." rows="1"></textarea>
+                        <div class="input-actions">
+                            <button class="action-btn" id="voiceBtn" title="Voice Input">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                            </button>
+                            <button class="action-btn" id="sendBtn" disabled>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Mission/About ===== -->
+    <section class="about-section" id="about">
+        <div class="section-container fade-up">
+            <div class="section-header">
+                <h2 data-i18n="Our Mission">Our Mission</h2>
+                <p>Building a stronger democracy through accessible technology.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card glass-panel" style="text-align:center;">
+                    <div class="fcard-icon maps" style="margin:0 auto 1.5rem;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    </div>
+                    <h3>Strictly Non-Partisan</h3>
+                    <p>Engineered to be completely neutral. We never promote any political party, candidate, or ideology. Facts only.</p>
+                </div>
+                <div class="feature-card glass-panel" style="text-align:center;">
+                    <div class="fcard-icon calendar" style="margin:0 auto 1.5rem;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>No tracking, no cookies, no data harvesting. Your civic queries remain completely private and secure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2.5"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f0ff" /><stop offset="100%" stop-color="#8a2be2" /></linearGradient></defs><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        ElectraBot
+                    </h3>
+                    <p>The premium, AI-powered election education assistant for the modern Indian voter.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Official ECI Links</h4>
+                    <a href="https://www.eci.gov.in" target="_blank" rel="noopener">Election Commission</a>
+                    <a href="https://voters.eci.gov.in" target="_blank" rel="noopener">Voter Portal</a>
+                    <a href="https://affidavit.eci.gov.in" target="_blank" rel="noopener">Candidate Affidavits</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Ecosystem</h4>
+                    <a href="https://maps.google.com" target="_blank" rel="noopener">Google Maps</a>
+                    <a href="https://calendar.google.com" target="_blank" rel="noopener">Google Calendar</a>
+                    <a href="https://aistudio.google.com" target="_blank" rel="noopener">Google AI Studio</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ElectraBot Project. Developed for educational purposes. Not officially affiliated with the ECI.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== Knowledge Level Modal ===== -->
+    <div class="modal-overlay" id="levelModal">
+        <div class="modal">
+            <div class="modal-accent"></div>
+            <div class="modal-body">
+                <div class="modal-icon-wrap">
+                    <div class="brand-icon" style="margin:0 auto; width:56px; height:56px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                </div>
+                <h2 data-i18n="Initialize Profile">Initialize Profile</h2>
+                <p class="modal-sub">Calibrate Electra AI to your civic knowledge level</p>
+                <div class="modal-options">
+                    <button class="modal-btn" data-level="beginner" id="lvlBeginner">
+                        <span class="mbtn-icon">🌱</span>
+                        <div><strong data-i18n="Novice Voter">Novice Voter</strong><small>First-time or learning the basics</small></div>
+                    </button>
+                    <button class="modal-btn" data-level="intermediate" id="lvlIntermediate">
+                        <span class="mbtn-icon">📚</span>
+                        <div><strong data-i18n="Experienced Citizen">Experienced Citizen</strong><small>Familiar with standard processes</small></div>
+                    </button>
+                    <button class="modal-btn" data-level="advanced" id="lvlAdvanced">
+                        <span class="mbtn-icon">🎓</span>
+                        <div><strong data-i18n="Civic Expert">Civic Expert</strong><small>Deep policy and structural knowledge</small></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Scripts ===== -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,hi,kn', autoDisplay: false}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <!-- Override Google Translate default styling that breaks the UI -->
+    <style>
+        .goog-te-banner-frame.skiptranslate { display: none !important; }
+        body { top: 0px !important; }
+        #goog-gt-tt { display: none !important; top: 0px !important; }
+        .goog-tooltip skiptranslate { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+    </style>
+
+    <script src="knowledge.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
