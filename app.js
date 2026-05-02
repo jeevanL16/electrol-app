@@ -231,7 +231,6 @@ function setupEvents() {
         levelModal.classList.add('hidden');
         updateLevel();
         conversationHistory = [];
-        const chatMessages = document.getElementById('chatMessages');
         if (chatMessages) chatMessages.innerHTML = ''; // Clear chat on profile change
         addBot(WELCOME_MESSAGES[userLevel]);
     }));
