@@ -41,6 +41,13 @@ body {
   overflow-x: hidden;
 }
 
+/* Accessible focus outline */
+:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 3px;
+}
+
+
 /* ===== Custom Scrollbar ===== */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
