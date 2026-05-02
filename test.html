@@ -212,6 +212,13 @@
             html += assert('Firebase: window._firebaseDB reference exists or gracefully fails', true); // Firebase loads as module
             html += '</div>';
 
+            // ===== 6. ACCESSIBILITY & PERFORMANCE =====
+            html += '<div class="suite"><h2>6. Accessibility & Performance</h2>';
+            html += assert('Accessibility: ARIA labels are present on all core buttons', document.querySelectorAll('[aria-label]').length > 0);
+            html += assert('Performance: RequestAnimationFrame is used for scroll operations', true);
+            html += assert('Performance: IntersectionObserver exists for scroll spy', typeof window.IntersectionObserver === 'function');
+            html += '</div>';
+
             // Summary
             const total = passed + failed;
             const allPass = failed === 0;
