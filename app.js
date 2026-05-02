@@ -224,16 +224,21 @@ function setupEvents() {
         if (apiKey && !apiKeyInput.value) apiKeyInput.value = '••••••••••••••••••••';
     });
 
-    // Level buttons
-    document.querySelectorAll('.modal-btn').forEach(b => b.addEventListener('click', () => {
-        userLevel = b.dataset.level;
-        sessionStorage.setItem('electra_level', userLevel);
-        levelModal.classList.add('hidden');
-        updateLevel();
-        conversationHistory = [];
-        if (chatMessages) chatMessages.innerHTML = ''; // Clear chat on profile change
-        addBot(WELCOME_MESSAGES[userLevel]);
-    }));
+    // Level buttons — Event Delegation for optimal memory efficiency
+    const modalOptions = document.querySelector('.modal-options');
+    if (modalOptions) {
+        modalOptions.addEventListener('click', (e) => {
+            const b = e.target.closest('.modal-btn');
+            if (!b) return;
+            userLevel = b.dataset.level;
+            sessionStorage.setItem('electra_level', userLevel);
+            levelModal.classList.add('hidden');
+            updateLevel();
+            conversationHistory = [];
+            if (chatMessages) chatMessages.innerHTML = ''; // Clear chat on profile change
+            addBot(WELCOME_MESSAGES[userLevel]);
+        });
+    }
 
     // Allow changing profile by clicking the badge
     if (cpLevel) {
@@ -253,31 +258,47 @@ function setupEvents() {
         userInput.style.height = Math.min(userInput.scrollHeight, 100) + 'px';
     });
 
-    // Service cards → send as chat query
-    document.querySelectorAll('.service-card').forEach(c => c.addEventListener('click', () => {
-        if (!userLevel) { levelModal.classList.remove('hidden'); return; }
-        const t = c.dataset.topic;
-        const title = KNOWLEDGE[t]?.title || t;
-        document.getElementById('chat').scrollIntoView({ behavior: 'smooth' });
-        setTimeout(() => {
-            userInput.value = `Tell me about: ${title}`;
+    // Service cards → Event Delegation for maximum performance
+    const servicesGrid = document.querySelector('.services-grid');
+    if (servicesGrid) {
+        servicesGrid.addEventListener('click', (e) => {
+            const c = e.target.closest('.service-card');
+            if (!c) return;
+            if (!userLevel) { levelModal.classList.remove('hidden'); return; }
+            const t = c.dataset.topic;
+            const title = KNOWLEDGE[t]?.title || t;
+            const chatEl = document.getElementById('chat');
+            if (chatEl) chatEl.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                userInput.value = `Tell me about: ${title}`;
+                send();
+            }, 500);
+        });
+    }
+
+    // Suggestion chips → Event Delegation
+    const chatSuggestions = document.getElementById('chatSuggestions');
+    if (chatSuggestions) {
+        chatSuggestions.addEventListener('click', (e) => {
+            const c = e.target.closest('.sugg-chip');
+            if (!c) return;
+            if (!userLevel) { levelModal.classList.remove('hidden'); return; }
+            userInput.value = c.dataset.q;
             send();
-        }, 500);
-    }));
+        });
+    }
 
-    // Suggestion chips
-    document.querySelectorAll('.sugg-chip').forEach(c => c.addEventListener('click', () => {
-        if (!userLevel) { levelModal.classList.remove('hidden'); return; }
-        userInput.value = c.dataset.q;
-        send();
-    }));
-
-    // Nav scroll
-    document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', () => {
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        l.classList.add('active');
-        navLinks.classList.remove('open');
-    }));
+    // Nav scroll → Event Delegation
+    const navLinksContainer = document.getElementById('navLinks');
+    if (navLinksContainer) {
+        navLinksContainer.addEventListener('click', (e) => {
+            const l = e.target.closest('.nav-link');
+            if (!l) return;
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            l.classList.add('active');
+            navLinksContainer.classList.remove('open');
+        });
+    }
 
     chatFab.addEventListener('click', () => document.getElementById('chat').scrollIntoView({ behavior: 'smooth' }));
     hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
