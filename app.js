@@ -266,7 +266,7 @@ function setupEvents() {
     }));
 
     // Suggestion chips
-    document.querySelectorAll('.suggestion-chip').forEach(c => c.addEventListener('click', () => {
+    document.querySelectorAll('.sugg-chip').forEach(c => c.addEventListener('click', () => {
         if (!userLevel) { levelModal.classList.remove('hidden'); return; }
         userInput.value = c.dataset.q;
         send();
@@ -688,9 +688,9 @@ function handleSensitive() {
  * @description Shows fallback options when the bot cannot understand the user's local query
  */
 function showFallback() {
-    const topics = Object.entries(KNOWLEDGE).map(([k, v]) => `<button class="suggestion-chip" onclick="document.querySelector('[data-topic=${k}]').click()">${v.title}</button>`).join('');
+    const topics = Object.entries(KNOWLEDGE).map(([k, v]) => `<button class="sugg-chip" onclick="document.querySelector('[data-topic=&quot;${k}&quot;]').click()">${v.title}</button>`).join('');
     addBot(`<div class="rs rs-simple"><div class="rs-title"><span>💡</span> I Can Help With These Topics</div><p>Here are the topics I cover:</p></div>
         <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.6rem">${topics}</div>
-        <p style="margin-top:0.6rem;color:var(--gray-500);font-size:0.82rem">Click any topic or ask a specific question!</p>
+        <p style="margin-top:0.6rem;color:var(--text-muted);font-size:0.82rem">Click any topic or ask a specific question!</p>
         <div class="continue-line">Would you like to go deeper into this or explore another topic?</div>`);
 }
